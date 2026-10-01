@@ -1,0 +1,19 @@
+# Render Blueprint: put this file at the ROOT of your repo (next to index.html), then
+# Render dashboard > New > Blueprint > pick the repo.
+services:
+  - type: web
+    name: texhub-compiler
+    runtime: docker
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: ./server
+    plan: starter            # TeX Live needs more than the 512 MB free tier
+    healthCheckPath: /health
+    envVars:
+      - key: ALLOWED_ORIGINS   # e.g. https://stats-l4qm.vercel.app (comma separated, no trailing slash)
+        sync: false
+      - key: FIREBASE_PROJECT_ID  # rental-7b444 : makes /compile require a signed-in Texhub user
+        sync: false
+      - key: COMPILE_TIMEOUT_MS
+        value: "90000"
+      - key: MAX_CONCURRENT
+        value: "2"
