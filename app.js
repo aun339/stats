@@ -60,12 +60,8 @@ const profile = () => ({ name: S.user.displayName || S.user.email, photo: S.user
 $("#gbtn").onclick = async () => {
   const er = $("#authErr"); er.classList.add("hidden");
   try {
-    const { user } = await signInWithPopup(auth, provider);
-    if (!uni(user.email)) {
-      await signOut(auth);
-      er.textContent = `${user.email} is not a university account. Use an address ending in .edu or .ac.xx.`;
-      er.classList.remove("hidden");
-    }
+    await signInWithPopup(auth, provider);
+    // University-only check (uni(email)) is no longer enforced: any Google account can sign in.
   } catch (e) {
     if (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request") return;
     er.textContent = e.code === "auth/unauthorized-domain"
@@ -77,7 +73,7 @@ $("#gbtn").onclick = async () => {
 $("#out").onclick = () => signOut(auth);
 
 onAuthStateChanged(auth, user => {
-  if (user && uni(user.email)) {
+  if (user) {
     S.user = user; renderDash(); watchProjects(); show("dash");
   } else {
     S.user = null; S.cur = null; stopEditor();
