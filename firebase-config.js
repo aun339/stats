@@ -11,7 +11,10 @@ import {
 // Web API keys identify your project; they are not secrets. Access is
 // controlled by Firestore security rules and Authorized domains in the console.
 const firebaseConfig = {
-  apiKey: "AIzaSyBDkb4xxaQb1WTF-_p3v7XeZwfsvxiDYPs",
+  apiKey: "AIzaSyBDkb4xxaQb1WTf-_p3v7XeZwfsvxiDYPs",
+  storageBucket: "texhub-48c20.firebasestorage.app",
+  messagingSenderId: "789408351670",
+  appId: "1:789408351670:web:e28cfa91797cefca302d17",
   // On the Vercel site, the sign-in handler is proxied through the same domain (see vercel.json)
   // so the browser doesn't block cross-site storage. Everywhere else, the default is used.
   authDomain: location.hostname === "stats-l4qm.vercel.app" ? "stats-l4qm.vercel.app" : "texhub-48c20.firebaseapp.com",
