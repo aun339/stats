@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Texhub – group LaTeX workspace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- VIEW 1: LANDING / GOOGLE LOGIN -->
+<section id="landing" class="min-h-full grid lg:grid-cols-2">
+  <div class="flex flex-col justify-center px-8 sm:px-16 py-12 max-w-xl mx-auto w-full">
+    <div class="flex items-center gap-2 mb-10 font-bold text-xl"><span class="w-8 h-8 rounded-lg grid place-items-center text-white" style="background:var(--accent)">T</span>Texhub</div>
+    <h1 class="text-4xl sm:text-5xl font-semibold leading-tight" style="font-family:'Newsreader',serif">Write your group report together, in LaTeX.</h1>
+    <p class="mt-4 text-lg" style="color:var(--mute)">Sign in with your university account, start a project, and share one code with your group.</p>
+    <button id="gbtn" class="btn2 mt-8 flex items-center justify-center gap-3 w-full sm:w-auto text-base">
+      <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.2 5.5-4.7 7.2l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.6z"/><path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 010-9.4l-7.9-6.1a24 24 0 000 21.6l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+      Sign in with University Google Account</button>
+    <p id="authErr" class="text-sm mt-3 hidden" style="color:#d9534f"></p>
+    <p class="mt-3 text-sm" style="color:var(--mute)">Only .edu and .ac.* accounts can sign in.</p>
+  </div>
+  <div class="hidden lg:flex items-center justify-center p-12" style="background:var(--accent)">
+    <div class="page" style="transform:rotate(-2deg);max-width:420px;min-height:0;padding:36px"><h1>Thermal Drift in Cold-Start Sensors</h1><p class="au">Group 7</p><h2>1 Introduction</h2><p>We measure drift over a <i>24</i>-hour window and compare three calibration schemes against a reference.</p></div>
+  </div>
+</section>
+
+<!-- VIEW 2: DASHBOARD (CREATE / JOIN) -->
+<section id="dash" class="hidden min-h-full">
+  <header class="card border-x-0 border-t-0 px-5 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2 font-bold"><span class="w-7 h-7 rounded-lg grid place-items-center text-white text-sm" style="background:var(--accent)">T</span>Texhub</div>
+    <div class="flex items-center gap-3"><span id="dUser" class="hidden sm:block text-sm" style="color:var(--mute)"></span><div id="dAv"></div><button id="out" class="btn2 !py-1.5 text-sm">Sign out</button></div>
+  </header>
+  <main class="max-w-4xl mx-auto px-5 py-10">
+    <h1 id="hello" class="text-3xl font-semibold" style="font-family:'Newsreader',serif"></h1>
+    <p class="mt-1" style="color:var(--mute)">Start a project as group head, or join your group with a code.</p>
+    <div class="grid md:grid-cols-2 gap-5 mt-8">
+      <div class="card rounded-2xl p-6">
+        <h2 class="text-lg font-semibold">Create new project</h2>
+        <p class="text-sm mt-1 mb-4" style="color:var(--mute)">You become the group head. We generate a join code for your teammates.</p>
+        <input id="pname" placeholder="Project name" value="Group Report" aria-label="Project name">
+        <button id="create" class="btn w-full mt-3">Create project</button>
+      </div>
+      <div class="card rounded-2xl p-6">
+        <h2 class="text-lg font-semibold">Join existing project</h2>
+        <p class="text-sm mt-1 mb-4" style="color:var(--mute)">Enter the code from your group head, for example <span class="mono">OL-8921</span>.</p>
+        <input id="code" class="mono" placeholder="OL-0000" maxlength="7" aria-label="Group join code">
+        <p id="codeErr" class="text-sm mt-2 hidden" style="color:#d9534f"></p>
+        <button id="join" class="btn2 w-full mt-3">Join project</button>
+      </div>
+    </div>
+    <h2 class="text-lg font-semibold mt-10 mb-3">Your projects</h2>
+    <div id="plist" class="space-y-2"></div>
+  </main>
+</section>
+
+<!-- VIEW 3: SPLIT-SCREEN LATEX EDITOR -->
+<section id="editor" class="hidden h-full flex-col">
+  <header class="card border-x-0 border-t-0 px-3 sm:px-5 py-2.5 flex items-center gap-3 flex-wrap">
+    <button id="back" class="btn2 !py-1.5 !px-3 text-sm" aria-label="Back to projects">Projects</button>
+    <div class="min-w-0"><div id="eName" class="font-semibold truncate"></div><div class="text-xs" style="color:var(--mute)"><span class="pulse">●</span> <span id="eSave">All changes saved</span></div></div>
+    <div class="flex-1"></div>
+    <button id="copy" class="btn2 !py-1.5 !px-3 text-sm mono" title="Copy join code"></button>
+    <div id="avs" class="flex -space-x-2 pl-1"></div>
+  </header>
+  <div class="flex lg:hidden card border-x-0 border-t-0 text-sm font-semibold">
+    <button id="tCode" class="flex-1 py-2" style="color:var(--accent)">Code</button><button id="tPrev" class="flex-1 py-2">Preview</button>
+  </div>
+  <div class="flex-1 min-h-0 grid lg:grid-cols-2">
+    <div id="pCode" class="relative min-h-0" style="background:var(--code)">
+      <div id="gut" class="mono" aria-hidden="true"></div>
+      <pre id="hl" class="mono" aria-hidden="true"></pre>
+      <textarea id="src" class="mono" spellcheck="false" aria-label="LaTeX source"></textarea>
+    </div>
+    <div id="pPrev" class="hidden lg:block min-h-0 overflow-auto p-4 sm:p-8" style="background:#8a95a6"><div id="page" class="page"></div></div>
+  </div>
+</section>
+
+<div id="toast" class="hidden fixed left-1/2 -translate-x-1/2 bottom-6 z-50 card rounded-xl px-4 py-2 text-sm shadow-lg"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

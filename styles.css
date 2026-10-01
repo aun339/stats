@@ -1,0 +1,35 @@
+/* Texhub styles. Tailwind itself is loaded via the CDN script in index.html. */
+:root{--bg:#eef1f5;--panel:#fff;--ink:#0f1b2d;--mute:#5d6b7e;--line:#d9dfe7;--accent:#1f7a5c;--accent2:#175e46;--code:#0f1b2d;--codeink:#d7e0ee;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b121d;--panel:#121c2b;--ink:#e8eef7;--mute:#93a1b5;--line:#243247;--accent:#3fbf93;--accent2:#2fa57d}}
+:root[data-theme="dark"]{--bg:#0b121d;--panel:#121c2b;--ink:#e8eef7;--mute:#93a1b5;--line:#243247;--accent:#3fbf93;--accent2:#2fa57d}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:'Instrument Sans',system-ui,sans-serif}
+
+.card{background:var(--panel);border:1px solid var(--line)}
+.btn{background:var(--accent);color:#fff;font-weight:600;border-radius:10px;padding:.65rem 1.1rem;transition:background .15s}
+.btn:hover{background:var(--accent2)}
+.btn2{border:1px solid var(--line);border-radius:10px;padding:.65rem 1.1rem;font-weight:600;background:var(--panel)}
+.btn2:hover{border-color:var(--accent)}
+.btn2:disabled,.btn:disabled{opacity:.6;cursor:wait}
+input{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:.65rem .8rem;width:100%;color:var(--ink)}
+input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65}
+
+/* Editor: highlighted <pre> sits under a transparent <textarea> */
+#hl,#src{position:absolute;inset:0;margin:0;padding:14px 14px 14px 52px;white-space:pre;overflow:auto;tab-size:2;border:0}
+#src{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none}
+#hl{color:var(--codeink);pointer-events:none}
+#gut{position:absolute;left:0;top:0;bottom:0;width:40px;padding:14px 8px 0 0;text-align:right;color:#5b6b83;overflow:hidden;white-space:pre;background:#0c1626}
+.c-cmd{color:#7fd1ae}.c-com{color:#6c7d96;font-style:italic}.c-env{color:#f0c36d}.c-math{color:#9ec1ff}
+
+/* Live preview "paper" */
+.page{background:#fff;color:#111;font-family:'Newsreader',Georgia,serif;font-size:15px;line-height:1.55;box-shadow:0 2px 24px rgba(10,20,40,.18);width:100%;max-width:560px;min-height:720px;padding:56px 56px 64px;margin:0 auto}
+.page h1{font-size:26px;text-align:center;font-weight:600;margin:0 0 6px}
+.page .au,.page .dt{text-align:center;margin:0 0 4px}
+.page h2{font-size:18px;font-weight:600;margin:20px 0 6px}.page h3{font-size:15px;font-weight:600;margin:14px 0 4px}
+.page p{margin:0 0 10px;text-align:justify}.page ul{list-style:disc;margin:0 0 10px 22px}.page ol{list-style:decimal;margin:0 0 10px 22px}
+.page .abs{margin:14px 36px;font-size:13.5px}.page .abs b{display:block;text-align:center}
+
+/* Presence */
+.dot{width:9px;height:9px;border-radius:99px;background:#35c58a;border:2px solid var(--panel);position:absolute;right:-2px;bottom:-2px}
+@media(prefers-reduced-motion:no-preference){.pulse{animation:p 2.4s ease-in-out infinite}@keyframes p{50%{opacity:.45}}}
