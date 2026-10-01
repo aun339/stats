@@ -4,8 +4,8 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, doc, collection, getDoc, updateDoc, onSnapshot, writeBatch,
-  query, where, arrayUnion, serverTimestamp
+  getFirestore, doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, onSnapshot, writeBatch,
+  query, where, orderBy, arrayUnion, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Web API keys identify your project; they are not secrets. Access is
@@ -41,6 +41,6 @@ provider.setCustomParameters({ prompt: "select_account" });
 export {
   auth, db, provider,
   signInWithPopup, signOut, onAuthStateChanged,
-  doc, collection, getDoc, updateDoc, onSnapshot, writeBatch,
-  query, where, arrayUnion, serverTimestamp
+  doc, collection, getDoc, getDocs, setDoc, updateDoc, deleteDoc, onSnapshot, writeBatch,
+  query, where, orderBy, arrayUnion, serverTimestamp
 };
