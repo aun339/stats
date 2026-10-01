@@ -1,0 +1,129 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\title{Comparative Analysis of the Haemoglobin Level across Dietary and Menstrual Blood Flow in Women of Reproductive Age}
+\author{Areeba Noor, Rida Batool, Maryam Majid, Khadija Shahzad, Faisal Bukhari \\ Department of Data Science, Faculty of Computing and Information Technology \\ University of the Punjab, Lahore, Pakistan}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This study focuses on the impact of diet and menstrual characteristics on haemoglobin levels among women of reproductive age in Lahore, Pakistan. Data were collected from 200 participants using a questionnaire and a laboratory haemoglobin test. Chi-square tests and ANOVA were used to determine associations and differences. The results highlight menstrual blood loss as a more critical factor in determining anaemia than dietary patterns. In addition, a machine learning model (Random Forest) was developed to predict anaemia risk with 62\% accuracy.
+\end{abstract}
+
+\section{Introduction}
+This study compares how dietary habits and menstrual blood flow affect haemoglobin levels in women of reproductive age (WRA). Previous research has analysed these factors separately; this study combines biological and lifestyle factors using primary clinical data from hospital patients and university students. Machine learning methods were also used to find the most significant predictors of haemoglobin variation. The findings indicate that menstrual blood flow has a stronger correlation with haemoglobin reduction than dietary patterns.
+
+Low haemoglobin levels are related to decreased work capacity and negative reproductive outcomes, making anaemia a major public health concern among WRA. Iron deficiency anaemia (IDA) is defined as a haemoglobin concentration under 12 g/dL for non-pregnant females aged 15 to 49. Approximately one-third of the world's WRA population experiences anaemia because of iron deficiency related to insufficient food intake, increased physiological demand during menstrual periods and possible pregnancies \cite{alem}.
+
+In Nigeria, WRA had an anaemia rate of 24.6\% \cite{mankell}. In Ethiopia, 27.6\% of pregnant women experienced undernutrition due to low wealth and limited diet \cite{alemu}. Plant sources of non-heme iron contain less available iron than animal sources and increase the risk of anaemia \cite{lopez}; for example, 28.2\% of Malaysian female vegetarians were anaemic \cite{chai}. Heavy menstrual bleeding contributes to iron loss: in Sweden, 66\% of women with Von Willebrand disease had heavy bleeding and 45\% had low ferritin levels \cite{myrin}. Menstrual blood loss accounts for 8\% of the variance in haemoglobin among blood donors, with a threefold increase in anaemia risk \cite{ekroos}.
+
+In Pakistan, 46\% of university students experienced anaemia linked to unhealthy diet habits such as skipping breakfast \cite{sayed}, \cite{tariq}. In Bangladesh, 42.9\% of female university students were anaemic, linked to low consumption of red meat and iron-rich foods \cite{fardaus}. Globally, an estimated one in four people experience iron deficiency \cite{kolars}. To better understand their combined and independent effects, this study compares haemoglobin levels among women of reproductive age across dietary patterns and menstrual blood flow characteristics.
+
+% TODO: paste the "Previous Work" section here.
+
+\section{Dataset}
+Data were collected from women aged 15 to 45 years, giving 200 responses from two sources: patients visiting the gynaecology ward at Jinnah Hospital, Lahore, and female university students from different departments in Lahore. Data were gathered through in-person interviews using a questionnaire with informed consent, and ethical clearance was obtained from the institutional review board. The questionnaire covered dietary habits, health status, socioeconomic variables and menstrual cycle details. Haemoglobin levels of hospital patients were determined by laboratory tests; university participants reported levels from the previous six months, which were compared against medical records. Individuals with chronic conditions that affect haemoglobin, such as thalassaemia or active cancer, were excluded.
+
+Two derived variables were created:
+\begin{itemize}
+  \item Anaemia status: haemoglobin below 12 g/dL is anaemic (WHO standard), otherwise non-anaemic.
+  \item Dietary pattern: Vegetarian if red or white meat consumption was Never or Rarely, Non-vegetarian if Daily or 3--4 times/week, and Mixed for all other patterns.
+\end{itemize}
+
+Responses were checked for outliers, missing values and inconsistencies, and categorical answers were numerically encoded (Never=0, Rarely=1, 1--2 times/week=2, 3--4 times/week=3, Daily=4). A sample of 200 remained after incomplete records were removed. Of all participants, 48.5\% were in the 20--29 age range.
+
+\section{Results}
+\subsection{Anaemia status and dietary patterns}
+Chi-square tests showed that dietary type did not significantly affect the prevalence of anaemia ($\chi^2 = 4.03$, $p = 0.133$, Table 1). People with a mixed diet had a slightly higher prevalence of anaemia. Eating habits were not significantly associated with anaemia in this study.
+
+\subsection{Anaemia status and menstrual characteristics}
+\begin{itemize}
+  \item Menstrual cycle regularity was not significantly associated with anaemia ($\chi^2 = 2.71$, $p = 0.259$).
+  \item Menstrual flow showed little association with anaemia ($\chi^2 = 0.29$, $p = 0.867$).
+  \item Menstrual symptoms such as fatigue were not significantly associated with anaemia ($\chi^2 = 5.43$, $p = 0.143$).
+  \item Bleeding duration was strongly associated with anaemia ($\chi^2 = 11.73$, $p = 0.008$), so prevalence varies by how many days bleeding lasts.
+\end{itemize}
+Only bleeding duration showed a strong relationship with anaemia among the menstrual variables, indicating a possible role for prolonged blood loss in anaemia risk.
+
+\begin{table}
+\caption{Table 1. Association between dietary and menstrual factors with anaemia status}
+\begin{tabular}{|l|c|c|l|}
+\hline
+Variable & $\chi^2$ & p-value & Interpretation \\
+\hline
+Diet & 4.03 & 0.133 & Not significant \\
+Cycle regularity & 2.71 & 0.259 & Not significant \\
+Bleeding duration & 11.73 & 0.008 & Significant \\
+Menstrual flow & 0.29 & 0.867 & Not significant \\
+Menstrual symptoms & 5.43 & 0.143 & Not significant \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Mean haemoglobin across dietary and menstrual groups}
+A one-way ANOVA found no significant difference in mean haemoglobin across eating habits ($F = 1.21$, $p = 0.301$, $\eta^2 = 0.012$); the dietary pattern explained very little of the haemoglobin variation. For the menstrual features, cycle regularity ($F = 0.73$, $p = 0.482$, $\eta^2 = 0.008$), menstrual flow ($F = 0.73$, $p = 0.483$, $\eta^2 = 0.007$) and menstrual symptoms ($F = 0.49$, $p = 0.693$, $\eta^2 = 0.007$) showed no significant effect. Bleeding duration showed a significant difference in mean haemoglobin between categories ($F = 3.77$, $p = 0.012$) and the largest effect size of the factors analysed ($\eta^2 = 0.055$).
+
+\begin{table}
+\caption{Table 2. ANOVA and effect size for dietary and menstrual factors on haemoglobin levels}
+\begin{tabular}{|l|c|c|c|l|}
+\hline
+Factor & F & p-value & $\eta^2$ & Effect size \\
+\hline
+Diet & 1.21 & 0.301 & 0.012 & Small \\
+Cycle regularity & 0.73 & 0.482 & 0.008 & Negligible \\
+Bleeding duration & 3.77 & 0.012 & 0.055 & Small--Moderate \\
+Menstrual flow & 0.73 & 0.483 & 0.007 & Negligible \\
+Menstrual symptoms & 0.49 & 0.693 & 0.007 & Negligible \\
+\hline
+\end{tabular}
+\end{table}
+
+Overall, menstrual factors accounted for a larger share of haemoglobin variation than dietary habits. Effect sizes gave more information than association tests alone, and menstrual blood loss characteristics had greater effects on haemoglobin levels in this population than dietary practices.
+
+\section{Machine Learning}
+Anaemia status was classified using a Random Forest with 300 trees and balanced class weights to handle the imbalance in anaemia incidence. The analysis used 200 complete cases and 11 features: four menstrual features (cycle regularity, bleeding duration, bleeding intensity and associated fatigue) and average consumption of iron-rich foods (pulses/lentils, leafy vegetables, red/white meat, eggs, dairy products and fruits). Haemoglobin below 11 g/dL was used as the anaemia indicator, because very few participants had levels of 12 g/dL or more, which would have made the model label most cases anaemic. The 11 g/dL threshold gave a more balanced classification.
+
+A 20\% test set (40 samples) was held out. The model reached an accuracy of 62\% and a weighted F1-score of 0.62. The Normal class performed better, with a recall of 74\%, while recall for the Anaemic class was 47\%. Of the test samples, 17 were true negatives and 8 true positives; six normal samples were classified as anaemic and nine anaemic samples as normal.
+
+\begin{table}
+\caption{Table 3. Classification report of the Random Forest model}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Class & Precision & Recall & F1-score & Support \\
+\hline
+Normal & 0.65 & 0.74 & 0.69 & 23 \\
+Anemic & 0.57 & 0.47 & 0.52 & 17 \\
+Accuracy & & & 0.62 & 40 \\
+Macro avg & 0.61 & 0.60 & 0.61 & 40 \\
+Weighted avg & 0.62 & 0.62 & 0.62 & 40 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Conclusion and Future Work}
+This study finds that menstrual bleeding duration has a stronger effect on haemoglobin level than diet. Most dietary factors showed minimal association with anaemia, and the statistics confirmed bleeding days as a key parameter, which highlights the importance of menstrual health in anaemia prevention.
+
+Dietary habits were not a statistical predictor of haemoglobin levels in women of reproductive age. This contrasts with Tariq et al. \cite{tariq}, who found that around 46\% of Pakistani university students were anaemic and attributed it to dietary habits. The difference may arise because the study groups differ: university students are a distinct sub-population, while this study included hospital patients from a broader reproductive-age group, in which anaemia may be affected by menstrual characteristics, health conditions and socioeconomic variables.
+
+The machine learning model shows that low-cost, questionnaire-based anaemia prediction is feasible. Future work should use larger samples, socioeconomic variables and more risk factors, adjust classification thresholds, and try ensemble techniques such as XGBoost and synthetic oversampling.
+
+\begin{thebibliography}{14}
+\bibitem{alem} A. Z. Alem et al. Prevalence and factors associated with anemia in women of reproductive age across low- and middle-income countries based on national data. Scientific Reports, 13(1):20335, 2023.
+\bibitem{alemu} T. Alemu, T. Yakob, and T. Solomon. Dietary diversity and haemoglobin level associated with undernutrition among pregnant women at Sidama Hawassa, Ethiopia. Nutrition and Metabolic Insights, 16, 2023.
+\bibitem{chai} Z. F. Chai, W. Y. Gan, Y. S. Chin, Y. K. Ching, and M. Appukutty. Factors associated with anemia among female adult vegetarians in Malaysia. Nutrition Research and Practice, 13(1):23--31, 2019.
+\bibitem{ekroos} S. Ekroos et al. Menstrual blood loss is an independent determinant of hemoglobin and ferritin levels in premenopausal blood donors. Acta Obstetricia et Gynecologica Scandinavica, 103(8):1645--1656, 2024.
+\bibitem{fardaus} F. Fardaus et al. Prevalence of anemia and its associated factors among female university students in Jashore, Bangladesh. Discover Public Health, 22(1):1--18, 2025.
+\bibitem{kolars} B. Kolars et al. Iron deficiency and iron deficiency anemia: a comprehensive overview of established and emerging concepts. Pharmaceuticals, 18(8):1104, 2025.
+\bibitem{lopez} M. Lopez-Moreno et al. Plant-based diet and risk of iron-deficiency anemia: a review of the current evidence and implications for preventive strategies. Current Nutrition Reports, 14(1):81, 2025.
+\bibitem{mahajani} K. Mahajani and V. Bhatnagar. Comparative study of prevalence of anaemia in vegetarian and non vegetarian women of Udaipur city, Rajasthan. J Nutr Food Sci, 3:1--6, 2015.
+\bibitem{mankell} G. Mankelkl and B. Kinfe. Factors associated with anemia among reproductive age women in Nigeria: spatial and multilevel model analysis. Contraception and Reproductive Medicine, 9(1):12, 2024.
+\bibitem{mok} K. T. Mok et al. Knowledge and attitudes on anemia and menstrual health among Malaysian female university students. Scientific Reports, 14(1):26020, 2024.
+\bibitem{myrin} L. Myrin-Westesson, P. Elfvinge, E. Zetterberg, and A. Olsson. Prevalence of heavy menstrual bleeding, iron deficiency, iron deficiency anemia, and treatment in women with von Willebrand disease. Research and Practice in Thrombosis and Haemostasis, 9(4):102949, 2025.
+\bibitem{sayed} S. F. Sayed and S. Nagarajan. Haemoglobin status to determine nutritional anaemia and its association with breakfast skipping and BMI among nursing undergraduates of Farasan Island, KSA. Journal of Nutritional Science, 11:e36, 2022.
+\bibitem{tang} G. H. Tang and M. Sholzberg. Iron deficiency anemia among women: an issue of health equity. Blood Reviews, 64:101159, 2024.
+\bibitem{tariq} H. Tariq, A. Sohail, and S. A. Qureshi. Qualitative and biochemical assessment of the impact of dietary habits and body mass index on hemoglobin levels in female university students. Journal of Liaquat University of Medical \& Health Sciences, 23(04):303--308, 2024.
+\end{thebibliography}
+
+\end{document}

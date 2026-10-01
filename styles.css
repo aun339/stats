@@ -41,3 +41,12 @@ input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px soli
   #page,#page *{visibility:visible}
   #page{position:absolute;left:0;top:0;box-shadow:none;max-width:none;width:100%;margin:0}
 }
+
+/* Tables, figures, captions and references in the preview */
+.page table.tb{border-collapse:collapse;margin:6px auto 12px;font-size:12.5px}
+.page table.tb th,.page table.tb td{border:1px solid #444;padding:3px 8px;text-align:center}
+.page table.tb th{background:#f0f0f0}
+.page .cap{font-size:12.5px;text-align:center;margin:4px 0 8px}
+.page .fig{margin:10px 0}
+.page .figph{border:1px dashed #999;padding:36px;text-align:center;color:#777;font-size:13px}
+.page ol.bibl{font-size:12.5px;line-height:1.35}.page ol.bibl li{margin-bottom:4px}

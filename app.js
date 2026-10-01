@@ -181,17 +181,36 @@ $("#back").onclick = backToDash;
 $("#copy").onclick = () => { try { navigator.clipboard.writeText(S.cur.code); } catch (e) {} toast("Join code " + S.cur.code + " copied"); };
 
 function hl(t) { return esc(t).replace(/(%.*$)|(\\(?:begin|end)\{[^}]*\})|(\\[a-zA-Z]+)|(\$[^$\n]*\$)/gm, (m, a, b, c) => a ? `<span class="c-com">${m}</span>` : b ? `<span class="c-env">${m}</span>` : c ? `<span class="c-cmd">${m}</span>` : `<span class="c-math">${m}</span>`); }
-function inl(s) { return esc(s).replace(/\\textbf\{([^}]*)\}/g, "<b>$1</b>").replace(/\\(?:textit|emph)\{([^}]*)\}/g, "<i>$1</i>").replace(/\$([^$]*)\$/g, "<i>$1</i>").replace(/\\LaTeX/g, "LaTeX").replace(/\\\\/g, "<br>").replace(/\\%/g, "%"); }
+let BIB = {};
+const SYM = { chi: "χ", eta: "η", sigma: "σ", alpha: "α", beta: "β", mu: "μ", geq: "≥", leq: "≤", ge: "≥", le: "≤", times: "×", pm: "±", approx: "≈", neq: "≠" };
+const mathy = x => x.replace(/\\([a-zA-Z]+)/g, (m, k) => SYM[k] || m).replace(/\^\{?2\}?/g, "²").replace(/\^\{?3\}?/g, "³").replace(/_\{?([^}\s]*)\}?/g, "<sub>$1</sub>");
+function inl(s) { return esc(s).replace(/\\textbf\{([^}]*)\}/g, "<b>$1</b>").replace(/\\(?:textit|emph)\{([^}]*)\}/g, "<i>$1</i>").replace(/\\cite\{([^}]*)\}/g, (m, k) => "[" + k.split(",").map(x => BIB[x.trim()] || "?").join(", ") + "]").replace(/\$([^$]*)\$/g, (m, x) => "<i>" + mathy(x) + "</i>").replace(/\\LaTeX/g, "LaTeX").replace(/\\\\/g, "<br>").replace(/\\%/g, "%").replace(/\\&amp;/g, "&amp;").replace(/--/g, "–").replace(/~/g, "&nbsp;"); }
 function render(src) {
+  BIB = {}; let bi = 0; for (const mm of src.matchAll(/\\bibitem\{([^}]+)\}/g)) BIB[mm[1]] = ++bi;
   const g = k => { const m = src.match(new RegExp("\\\\" + k + "\\{([^}]*)\\}")); return m ? m[1] : ""; };
   const bm = src.split("\\begin{document}"); if (bm.length < 2) return `<p style="color:#b33">Missing \\begin{document}</p>`;
   const body = bm[1].split("\\end{document}")[0];
   const title = g("title"), au = g("author"), dt = g("date") === "\\today" ? new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : g("date");
-  let out = "", para = [], list = null, sec = 0, sub = 0;
+  let out = "", para = [], list = null, sec = 0, sub = 0, tab = null, bib = false;
   const flush = () => { if (para.length) { out += `<p>${inl(para.join(" "))}</p>`; para = []; } };
   for (const raw of body.split("\n")) {
     const l = raw.replace(/(^|[^\\])%.*$/, "$1").trim(); let m;
     if (!l) { flush(); continue; }
+    if (tab) {
+      if (/^\\end\{tabular\}/.test(l)) { out += `<table class="tb">${tab.map((r, i) => `<tr>${r.map(c => i ? `<td>${inl(c.trim())}</td>` : `<th>${inl(c.trim())}</th>`).join("")}</tr>`).join("")}</table>`; tab = null; continue; }
+      const row = l.replace(/\\(hline|toprule|midrule|bottomrule)/g, "").replace(/\\\\\s*$/, "").trim();
+      if (row) tab.push(row.split("&"));
+      continue;
+    }
+    if (/^\\begin\{tabular\}/.test(l)) { flush(); tab = []; continue; }
+    if (/^\\begin\{thebibliography\}/.test(l)) { flush(); bib = true; out += `<h2>References</h2><ol class="bibl">`; continue; }
+    if (/^\\end\{thebibliography\}/.test(l)) { out += `</ol>`; bib = false; continue; }
+    if (bib && (m = l.match(/^\\bibitem\{[^}]*\}\s*(.*)/))) { out += `<li>${inl(m[1])}</li>`; continue; }
+    if (/^\\(centering|label\{[^}]*\}|noindent|newpage|clearpage)\b/.test(l) || /^\\(begin|end)\{(center|table\*?)\}/.test(l)) continue;
+    if (/^\\begin\{figure\*?\}/.test(l)) { flush(); out += `<div class="fig">`; continue; }
+    if (/^\\end\{figure\*?\}/.test(l)) { out += `</div>`; continue; }
+    if (/^\\includegraphics/.test(l)) { out += `<div class="figph">Figure (image not shown in preview)</div>`; continue; }
+    if (m = l.match(/^\\caption\{(.*)\}/)) { flush(); out += `<div class="cap">${inl(m[1])}</div>`; continue; }
     if (l === "\\maketitle") { flush(); out += `<h1>${inl(title)}</h1><p class="au">${inl(au)}</p><p class="dt">${inl(dt)}</p>`; continue; }
     if (l === "\\begin{abstract}") { flush(); out += `<div class="abs"><b>Abstract</b>`; continue; }
     if (l === "\\end{abstract}") { flush(); out += `</div>`; continue; }
