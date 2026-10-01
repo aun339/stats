@@ -1,2 +1,16 @@
+<<<<<<< HEAD
 { "name": "texhub-server", "version": "1.0.0", "main": "server.js", "scripts": { "start": "node server.js" },
   "dependencies": { "cors": "^2.8.5", "express": "^4.19.2" } }
+=======
+{
+  "name": "texhub-compiler",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "LaTeX compile service for Texhub (Express + latexmk/tectonic)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "dev": "node --watch server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "cors": "^2.8.5", "express": "^4.19.2", "jose": "^5.6.3" }
+}
+>>>>>>> 5b213d8c828761a0d8c44536853246cfa7f180ee
