@@ -33,3 +33,11 @@ input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px soli
 /* Presence */
 .dot{width:9px;height:9px;border-radius:99px;background:#35c58a;border:2px solid var(--panel);position:absolute;right:-2px;bottom:-2px}
 @media(prefers-reduced-motion:no-preference){.pulse{animation:p 2.4s ease-in-out infinite}@keyframes p{50%{opacity:.45}}}
+
+/* Print fallback for "Download PDF": prints only the paper preview */
+@media print{
+  body *{visibility:hidden}
+  #pPrev{display:block!important;overflow:visible!important;background:#fff!important;padding:0!important}
+  #page,#page *{visibility:visible}
+  #page{position:absolute;left:0;top:0;box-shadow:none;max-width:none;width:100%;margin:0}
+}

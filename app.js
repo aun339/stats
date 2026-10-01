@@ -234,3 +234,33 @@ function tab(w) {
   $("#tCode").style.color = c ? "var(--accent)" : ""; $("#tPrev").style.color = c ? "" : "var(--accent)";
 }
 $("#tCode").onclick = () => tab("code"); $("#tPrev").onclick = () => tab("prev");
+
+/* ---------- Downloads: .tex source and PDF ---------- */
+const fileBase = () => ((S.cur?.name || "document").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-") || "document");
+$("#dlTex").onclick = () => {
+  const blob = new Blob([$("#src").value], { type: "application/x-tex;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = fileBase() + ".tex";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("Downloaded " + a.download);
+};
+$("#dlPdf").onclick = async () => {
+  if (!window.html2pdf) { toast("PDF library not loaded. Opening print dialog instead."); window.print(); return; }
+  const btn = $("#dlPdf"); btn.disabled = true;
+  // Render an off-screen A4-width copy so it works even when the preview tab is hidden on mobile
+  const host = document.createElement("div");
+  host.style.cssText = "position:fixed;left:-10000px;top:0;width:794px;background:#fff";
+  const clone = $("#page").cloneNode(true);
+  clone.style.cssText = "max-width:none;width:794px;min-height:0;box-shadow:none;margin:0;padding:40px 72px";
+  host.appendChild(clone); document.body.appendChild(host);
+  try {
+    await window.html2pdf().set({
+      margin: [12, 0, 12, 0], filename: fileBase() + ".pdf",
+      image: { type: "jpeg", quality: 0.98 }, html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }, pagebreak: { mode: ["css", "legacy"] }
+    }).from(clone).save();
+    toast("Downloaded " + fileBase() + ".pdf");
+  } catch (e) { toast("PDF failed: " + (e.message || e)); }
+  host.remove(); btn.disabled = false;
+};
