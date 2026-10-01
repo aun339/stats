@@ -158,9 +158,9 @@ function openProject(id) {
     $("#eName").textContent = p.name; $("#copy").textContent = p.code + " · copy";
     renderAvatars(p);
     const ta = $("#src");
-    if (first) { ta.value = p.src; sync(false); show("editor"); tab("code"); first = false; }
+    if (first) { ta.value = p.src; sync(false); hReset(p.src); show("editor"); tab("code"); first = false; }
     else if (!snap.metadata.hasPendingWrites && p.updatedBy !== CLIENT && !S.saveT && p.src !== ta.value) {
-      const pos = ta.selectionStart; ta.value = p.src; ta.setSelectionRange(Math.min(pos, p.src.length), Math.min(pos, p.src.length)); sync(false);
+      const pos = ta.selectionStart; ta.value = p.src; ta.setSelectionRange(Math.min(pos, p.src.length), Math.min(pos, p.src.length)); sync(false); hRemote(p.src);
     }
   }, e => { toast("Lost access to project: " + e.code); backToDash(); });
   const beat = () => updateDoc(ref, { [`presence.${S.user.uid}`]: Date.now() }).catch(() => {});
@@ -283,3 +283,40 @@ $("#dlPdf").onclick = async () => {
   } catch (e) { toast("PDF failed: " + (e.message || e)); }
   host.remove(); btn.disabled = false;
 };
+
+/* ---------- Undo / Redo (own history, because text is also changed by Firestore updates) ---------- */
+const H = { stack: [""], i: 0, t: null };
+const hBtns = () => {
+  const cur = $("#src").value;
+  $("#undo").disabled = !(H.i > 0 || cur !== H.stack[H.i]);
+  $("#redo").disabled = !(H.i < H.stack.length - 1);
+};
+function hReset(text) { clearTimeout(H.t); H.stack = [text]; H.i = 0; hBtns(); }
+function hCommit() {
+  clearTimeout(H.t);
+  const v = $("#src").value;
+  if (H.stack[H.i] === v) { hBtns(); return; }
+  H.stack = H.stack.slice(0, H.i + 1); H.stack.push(v);
+  if (H.stack.length > 200) H.stack.shift();
+  H.i = H.stack.length - 1; hBtns();
+}
+function hRemote(text) { // a teammate's change becomes its own history step
+  hCommit();
+  if (H.stack[H.i] !== text) { H.stack = H.stack.slice(0, H.i + 1); H.stack.push(text); H.i = H.stack.length - 1; }
+  hBtns();
+}
+function hGo(d) {
+  hCommit();
+  const n = H.i + d; if (n < 0 || n >= H.stack.length) return;
+  H.i = n;
+  const ta = $("#src"); ta.value = H.stack[n]; sync(true); hBtns(); ta.focus();
+}
+$("#src").addEventListener("input", () => { clearTimeout(H.t); H.t = setTimeout(hCommit, 400); hBtns(); });
+$("#src").addEventListener("keydown", e => {
+  const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+  if (mod && k === "z") { e.preventDefault(); hGo(e.shiftKey ? 1 : -1); }
+  else if (mod && k === "y") { e.preventDefault(); hGo(1); }
+  else if (e.key === "Tab") { clearTimeout(H.t); H.t = setTimeout(hCommit, 400); }
+});
+$("#undo").onclick = () => hGo(-1);
+$("#redo").onclick = () => hGo(1);

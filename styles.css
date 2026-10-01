@@ -50,3 +50,5 @@ input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px soli
 .page .fig{margin:10px 0}
 .page .figph{border:1px dashed #999;padding:36px;text-align:center;color:#777;font-size:13px}
 .page ol.bibl{font-size:12.5px;line-height:1.35}.page ol.bibl li{margin-bottom:4px}
+
+#undo:disabled,#redo:disabled{opacity:.4;cursor:default}
