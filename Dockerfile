@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-FROM node:20-bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended \
-    texlive-fonts-extra texlive-science texlive-bibtex-extra biber lmodern \
- && rm -rf /var/lib/apt/lists/*
-WORKDIR /app
-COPY package.json ./
-RUN npm install --omit=dev
-COPY server.js ./
-ENV PORT=3001
-EXPOSE 3001
-=======
 # Texhub compile server: Node 20 + TeX Live (pdfLaTeX, XeLaTeX, LuaLaTeX, latexmk, biber).
 # Works on Render, Railway, Fly.io, or anywhere that runs Docker.
 FROM node:20-bookworm-slim
@@ -38,5 +25,4 @@ ENV NODE_ENV=production PORT=8080
 USER node
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s CMD node -e "fetch('http://localhost:'+process.env.PORT+'/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
->>>>>>> 5b213d8c828761a0d8c44536853246cfa7f180ee
 CMD ["node", "server.js"]
